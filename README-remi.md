@@ -73,7 +73,7 @@ remi は標準リポジトリ や epel の範囲からは見つかりません�
 
 remi を入れる前に、Remi の [Configuration Wizard](https://rpms.remirepo.net/wizard/) が便利なので見ておくとよいです。CentOS6 に php-5.6 と、場合によってはそれ以外のバージョンも同時に入れたいなぁという条件でご相談した結果は以下の通り：
 
-![remi-wizard.png](https://path/to/remi-wizard.png)
+![remi-wizard.png](https://github.com/hotta/doc-ja/raw/master/images/remi-wizard.png)
 
 
 ### remi リポジトリの導入
