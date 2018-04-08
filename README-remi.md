@@ -260,7 +260,7 @@ vagrant@cent69base:~$ w3m http://localhost/phpinfo.php
 PHP Logo
 
 PHP Version 5.3.3
-（以下略) ... "Q" で w3m を終了）
+（以下略 ... "Q" で w3m を終了）
 ```
 
 ### php56 の構造
@@ -288,9 +288,9 @@ X11/  pear/      php.d/   pki/  skel/       xdg/
 opt/  pear.conf  php.ini  pm/   sysconfig/  xinetd.d/
 ```
 
-/etc/opt/remi/php56/ には、本来 /etc 直下にあるファイル／ディレクトリが見えます。
+/etc/opt/remi/php56/ 配下には、本来 /etc 直下にあるファイル／ディレクトリが見えます。
 
-
+```
 vagrant@cent69base:~$ ls -F /opt/remi/php56/
 enable  root/
 vagrant@cent69base:~$ ls -F /opt/remi/php56/root/
