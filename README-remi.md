@@ -1,4 +1,4 @@
-# Remi パッケージとか SCL について調べてみた（初心者向け？）
+# Remi パッケージとか SCL について調べてみた（初心者向け）
 
 php を入れる場合、いつもは CentOS 7.x と [webtatic リポジトリ](https://webtatic.com/) の組み合わせを使っています。ただ、OS は上げられないけど PHP はできれば最新にしたい的な案件に備えて、remi リポジトリの方も調べてみました。今回の対象のディストロは CentOS6.x です。単なる作業ログであり、知見はあんまりないかもしれないですが、yum / rpm コマンドの使い方など、初心者の方には参考になる部分もあるかもしれません。
 
@@ -239,7 +239,7 @@ php-5.3 と php-5.6 が共存しています。
 ```
 vagrant@cent69base:~$ which php
 /usr/bin/php
-vagrant@cent69base:~$ rpm -qf `which php`
+vagrant@cent69base:~$ rpm -qf `which php`               # /usr/bin/php を含むパッケージ名の表示
 php-cli-5.3.3-49.el6.x86_64
 vagrant@cent69base:~$ ls -l /usr/bin/php
 -rwxr-xr-x. 1 root root 3273840  3月 22 12:29 2017 /usr/bin/php
@@ -256,11 +256,11 @@ vagrant@cent69base:~$ sudo sh -c 'echo "<?php phpinfo();" > /var/www/html/phpinf
 vagrant@cent69base:~$ sudo /sbin/service httpd start
 Starting httpd:                                            [  OK  ]
 vagrant@cent69base:~$ sudo yum install w3m
-vagrant@cent69base:~$ w3m http://localhost/phpinfo.php
+vagrant@cent69base:~$ w3m http://localhost/phpinfo.php  # テキストブラウザが起動します
 PHP Logo
 
 PHP Version 5.3.3
-（以下略 ... "Q" で w3m を終了）
+（以下略 ... "Q" でテキストブラウザを終了）
 ```
 
 ### php56 の構造
@@ -335,7 +335,7 @@ Actions:
 Use '-' as <command> to read the command from standard input.
 ```
 
-/etc/scl/prefixes/php56 でディレクトリツリーが /opt/remi を起点にすることを示し、scl コマンドが /opt/remi/php56/enable を呼ぶことにより、php56 が有効になるようです。/opt/remi/php56/enable の中身は以下の通りです。
+/etc/scl/prefixes/php56 でディレクトリツリーが /opt/remi を起点にすることを示し、scl コマンドが /opt/remi/php56/enable を呼ぶことにより php56 が有効になります。/opt/remi/php56/enable の中身は以下の通りです。
 
 ```
 vagrant@cent69base:~$ cat /opt/remi/php56/enable
@@ -358,25 +358,24 @@ php56-2.3-1.el6.remi.x86_64
 
 ```
 vagrant@cent69base:~$ scl enable php56 -- php -v
-PHP 5.6.35 (cli) (built: Mar 29 2018 07:18:29)
+PHP 5.6.35 (cli) (built: Mar 29 2018 07:18:29)          # 5.6.35 が動く
 Copyright (c) 1997-2016 The PHP Group
 Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies
-vagrant@cent69base:~$ php -v
+vagrant@cent69base:~$ php -v                            # 5.3.3 が動く
 PHP 5.3.3 (cli) (built: Mar 22 2017 12:27:09)
 Copyright (c) 1997-2010 The PHP Group
 Zend Engine v2.3.0, Copyright (c) 1998-2010 Zend Technologies
 ```
 
-php56 が優先されるのは scl コマンドのプロセスの実行中だけのようです。コマンドとして bash を指定すれば、サブシェルとして php56 が有効な環境が作られます。
+php56 が優先されるのは scl コマンドのプロセスの配下だけです。コマンドとして bash を指定すれば、サブシェルとして php56 が有効な環境が作られます。
 
 ```
-vagrant@cent69base:~$ scl enable php56 -- bash
+vagrant@cent69base:~$ scl enable php56 -- bash          # サブシェルを起動
 vagrant@cent69base:~$ php -v
 PHP 5.6.35 (cli) (built: Mar 29 2018 07:18:29)
 Copyright (c) 1997-2016 The PHP Group
 Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies
-vagrant@cent69base:~$ exit
-exit
+vagrant@cent69base:~$ exit                              # サブシェルを抜ける
 vagrant@cent69base:~$ php -v
 PHP 5.3.3 (cli) (built: Mar 22 2017 12:27:09)
 Copyright (c) 1997-2010 The PHP Group
