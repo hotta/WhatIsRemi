@@ -1,6 +1,6 @@
-# Remi パッケージとか SCL について調べてみた（初心者向け）
+# Remi リポジトリとか SCL について調べてみた（初心者向け）
 
-php を入れる場合、これまでは CentOS 7.x と [webtatic リポジトリ](https://webtatic.com/) の組み合わせを使っていました。ただ、OS は上げられないけど PHP はできれば最新にしたい的な案件に備えて、remi リポジトリの方も調べてみました。今回の対象ディストロは CentOS 6.x です。単なる作業ログであり、知見はあんまりないかもしれないですが、yum / rpm コマンドの使い方など、初心者の方には参考になる部分もあるかもしれません。
+php を入れる場合、これまでは CentOS 7.x と [webtatic リポジトリ](https://webtatic.com/) の組み合わせを使っていました。ただ、OS は上げられないけど PHP はできれば最新にしたい的な案件に備えて、[remi リポジトリ](https://rpms.remirepo.net/)の方も調べてみました。今回の対象ディストロは CentOS 6.x です。単なる作業ログであり、知見はあんまりないかもしれないですが、yum / rpm コマンドの使い方など、初心者の方には参考になる部分もあるかもしれません。
 
 ## Remi リポジトリとは
 
@@ -19,15 +19,15 @@ centos-release-6-9.el6.12.3.x86_64
 
 ### 諸般の都合により、git と ansible を入れました。
 
+CentOS 6.x では ansible が epel リポジトリにしかないので事前に入れています。もっとも ansible が不要な場合でも、remi は epel に依存するので結局入れることになります。
+
 ```bash
 [vagrant@cent69-bare ~]$ sudo yum install git epel-release
 [vagrant@cent69-bare ~]$ sudo yum install ansible
-[vagrant@cent69-bare ~]$ rpm -qa | grep -E '(php|release)'
-epel-release-6-8.noarch
+[vagrant@cent69-bare ~]$ rpm -qa | grep -E '(php|release)' | sort
 centos-release-6-9.el6.12.3.x86_64
+epel-release-6-8.noarch
 ```
-
-（CentOS 6.x では、ansible が epel リポジトリにしかないのでここで入れてますが、ansible が不要な場合でも、remi は epel に依存するので結局入れることになります。）
 
 ### 標準の php を導入
 
@@ -71,7 +71,7 @@ No matches found for: remi
 
 remi は標準リポジトリ や epel の範囲からは見つかりません。Remi の本家 である https://rpms.remirepo.net/ から取ってくる必要があります。
 
-remi を入れる前に、Remi の [Configuration Wizard](https://rpms.remirepo.net/wizard/) が便利なので見ておくとよいです。CentOS6 に php-5.6 と、場合によってはそれ以外のバージョンも同時に入れたいなぁという条件でご相談した結果は以下の通り：
+remi を入れる前に、[Configuration Wizard](https://rpms.remirepo.net/wizard/) が便利なので見ておくとよいです。CentOS6 に php-5.6 と、場合によってはそれ以外のバージョンも同時に入れたいなぁという条件でご相談した結果は以下の通り：
 
 ![remi-wizard.png](https://github.com/hotta/doc-ja/raw/master/images/remi-wizard.png)
 
@@ -273,7 +273,7 @@ vagrant@cent69base:~$ rpm -ql php56
 vagrant@cent69base:~$ rpm -ql php56-runtime
 ```
 
-php56 には何も入っていませんが、php56-runtime には大量に入っていますので内容を見てみます。
+php56 には何も入っていませんでした。php56-runtime には大量に入っていますので内容を見てみます。
 
 ```
 vagrant@cent69base:~$ rpm -ql php56-runtime | head -6
@@ -307,14 +307,14 @@ vagrant@cent69base:~$ cat /etc/scl/prefixes/php56
 /opt/remi
 ```
 
-このファイルで remi リポジトリとしての起点を規定しています。"scl" は Software Collections のコマンド名でもあります。
+このファイルで remi リポジトリの起点を規定しています。"scl" は Software Collections のコマンド名でもあります。
 
 ```
 vagrant@cent69base:~$ scl -l
 php56
 vagrant@cent69base:~$ rpm -qf `which scl`
 scl-utils-20120927-29.el6_9.x86_64
-vagrant@cent69base:~$ rpm -qi scl-utils | grep ^Summary
+vagrant@cent69base:~$ rpm -qi scl-utils | grep ^Summary # パッケージの説明を表示
 Summary     : Utilities for alternative packaging
 vagrant@cent69base:~$ scl --help
 usage: scl <action> [<collection>...] <command>
